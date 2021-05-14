@@ -1,8 +1,8 @@
 # k8s-calico-networksets-controller
 
-With this controller, you can control access to custom resources by their names<br>
+With this controller, you can control access to/from custom resources by their names<br>
 The addresses of these resources can be obtained from your own dedicated service<br>
-For example, it can be salt hosts, net prefixes, dns names...<br>
+For example, they can be salt hosts, net prefixes, dns names...<br>
 Here is an example with dns names<br>
 Service for dns resolving - [dns-resolver](https://github.com/ktrufanov/dns-resolver)
 
