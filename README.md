@@ -9,7 +9,9 @@ Service for dns resolving - [here](https://github.com/ktrufanov/dns-resolver)
 ## Install
 quick start
 ```
-
+kubectl create ns calico-networksets-controller
+kubectl apply -f  https://raw.githubusercontent.com/ktrufanov/dns-resolver/0.0.1/k8s-mainfest.yaml
+kubectl apply -f  https://raw.githubusercontent.com/ktrufanov/k8s-calico-networksets-controller/0.0.11-1/k8s-mainfest.yaml
 ```
 
 ## Description
