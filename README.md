@@ -90,3 +90,5 @@ spec:
 ```
 This NetworkSet will be refreshed every reload_time times
 
+## Metrics
+- ***networksets_controller_errors*** - "Count of errors"
