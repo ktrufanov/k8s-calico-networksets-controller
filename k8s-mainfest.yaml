@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: networksets-controller
+  namespace: calico-networksets-controller
+data:
+  networksets-controller.toml: |
+    [main]
+    reload_time=60000
+    debug=false
+    service_port=8080
+    [DNS_RESOLVER]
+    url="http://dns-resolver.calico-networksets-controller:8080/dns"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: calico-networksets-controller
+  name: calico-networksets-controller-token
+  namespace: calico-networksets-controller
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: calico-networksets-controller
+  namespace: calico-networksets-controller
+  labels:
+    vault: secret
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: calico-networksets-controller
+  name: calico-networksets-controller
+rules:
+  - apiGroups: ["crd.projectcalico.org"]
+    resources:
+      - networksets
+      - globalnetworksets
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups: ["networking.k8s.io","crd.projectcalico.org"]
+    resources:
+      - networkpolicies
+      - globalnetworkpolicies
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: calico-networksets-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: calico-networksets-controller
+subjects:
+- kind: ServiceAccount
+  name: calico-networksets-controller
+  namespace: calico-networksets-controller
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calico-networksets-controller
+  namespace: calico-networksets-controller
+spec:
+  selector:
+    matchLabels:
+      app: calico-networksets-controller
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: calico-networksets-controller
+    spec:
+      volumes:
+      - name: networksets-controller
+        configMap:
+            name: networksets-controller
+            items:
+              - key: networksets-controller.toml
+                path: networksets-controller.toml
+      containers:
+      - name: calico-networksets-controller
+        image: localhost:5000/calico-networksets-controller
+        env:
+        - name: SERVICE_PORT
+          value: "8080"
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: networksets-controller
+          mountPath: /config-k8s
+        ports:
+        - name: http
+          containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: calico-networksets-controller
+  namespace: calico-networksets-controller
+  labels:
+    app: calico-networksets-controller
+spec:
+  ports:
+  - port: 8080
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: calico-networksets-controller
