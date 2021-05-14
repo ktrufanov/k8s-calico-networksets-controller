@@ -88,7 +88,7 @@ spec:
   nets:
   - 140.82.121.3/32
 ```
-This NetworkSet will be refreshed every reload_time times
+This NetworkSet will be refreshed every ***reload_time*** times
 
 ## Metrics
 - ***networksets_controller_errors*** - "Count of errors"
