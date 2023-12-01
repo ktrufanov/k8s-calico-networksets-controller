@@ -15,7 +15,7 @@ kubectl apply -f  https://raw.githubusercontent.com/ktrufanov/k8s-calico-network
 ```
 
 ## Description
-Controller watch by create/update/delete [Calico NetworkPolicy](https://docs.projectcalico.org/reference/resources/networkpolicy).<br>
+Controller watches by create/update/delete [Calico NetworkPolicy](https://docs.projectcalico.org/reference/resources/networkpolicy).<br>
 If source/destination selector of NetworkPolicy have the specific label then controller creates/updates [Calico NetworkSet](https://docs.projectcalico.org/reference/resources/networkset).<br>
 IP networks/CIDRs for NetworkSet are requested from the http url. This url is customizable for specific label.<br>
 Controller periodically updates the NetworkSet.<br>
